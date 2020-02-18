@@ -1,4 +1,0 @@
-{
-  "mongoURI": "mongodb+srv://admin:admin@management-systemdb-okac7.mongodb.net/test?retryWrites=true&w=majority",
-  "jwtSecret": "secretTokenManagementSystem"
-}
