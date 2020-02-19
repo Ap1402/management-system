@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check } = require("express-validator");
-const AppointmentsController = require("../../controllers/AppointmentsController");
+const PatientsController = require("../../controllers/PatientsController");
 
 //@route Post api/users
 //@desc Create Patient user
@@ -10,20 +10,18 @@ const AppointmentsController = require("../../controllers/AppointmentsController
 router.post(
   "/",
   [
-    check("doctor", "doctor is required")
+    check("address", "address is required")
       .not()
       .isEmpty(),
-    check("selectedDate", "selectedDate is required")
+    check("dni", "dni is required")
       .not()
       .isEmpty(),
-    check("description", "description is required")
+    check("history", "history is required")
       .not()
       .isEmpty()
   ],
   auth,
-  AppointmentsController.createAppointment
+  PatientsController.createPatient
 );
-
-router.get("/", auth, AppointmentsController.getAllAppoinments);
 
 module.exports = router;

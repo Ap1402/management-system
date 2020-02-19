@@ -12,15 +12,10 @@ const PatientSchema = new mongoose.Schema(
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: "user",
-      required: true
+      ref: "user"
     },
     history: {
       type: String
-    },
-    active: {
-      type: Boolean,
-      default: true
     }
   },
   { timestamps: true }

@@ -14,7 +14,7 @@ const AppointmentSchema = new mongoose.Schema(
       ref: "doctor",
       required: [true, "A doctor is needed"]
     },
-    assignedDate: {
+    selectedDate: {
       type: Date,
       required: [true, "A date is required"]
     },
@@ -24,7 +24,7 @@ const AppointmentSchema = new mongoose.Schema(
     },
     diagnosis: {
       type: String,
-      required: true
+      default: ""
     },
     status: {
       completed: {

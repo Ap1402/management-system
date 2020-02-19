@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const config = require("config");
 
 const DoctorSchema = new mongoose.Schema(
   {
@@ -23,11 +20,17 @@ const DoctorSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: [true, "User is need"]
+    },
     active: {
       type: Boolean,
       default: true
     }
   },
+
   { timestamps: true }
 );
 
