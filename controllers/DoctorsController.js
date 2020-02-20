@@ -21,9 +21,11 @@ exports.createDoctor = async (req, res) => {
           { user: userID },
           { $set: doctorFields },
           { new: true }
-        ).then(doctor => res.json(doctor));
+        ).then(doctor => res.status(200).json(doctor));
       } else {
-        new Doctor(doctorFields).save().then(doctor => res.json(doctor));
+        new Doctor(doctorFields)
+          .save()
+          .then(doctor => res.status(200).json(doctor));
       }
     });
   } catch (error) {

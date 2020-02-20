@@ -17,7 +17,7 @@ exports.createAppointment = async (req, res) => {
 
     new Appointment(appointmentFields)
       .save()
-      .then(appointment => res.json(appointment));
+      .then(appointment => res.status(200).json(appointment));
   } catch (error) {
     console.error(error.message);
     return res.status(500).send("server error");
@@ -27,7 +27,7 @@ exports.createAppointment = async (req, res) => {
 exports.getAllAppoinments = async (req, res) => {
   try {
     const appointments = await Appointment.find();
-    res.json(appointments);
+    res.status(201).json(appointments);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("server error");

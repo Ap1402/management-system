@@ -36,7 +36,7 @@ exports.registerUser = async (req, res) => {
       { expiresIn: 360000 },
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.status(201).json({ token });
       }
     );
   } catch (error) {
@@ -48,7 +48,7 @@ exports.registerUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password");
-    res.json(users);
+    res.status(201).json(users);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("server error");

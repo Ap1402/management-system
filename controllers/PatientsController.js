@@ -21,9 +21,11 @@ exports.createPatient = async (req, res) => {
           { user: req.user._id },
           { $set: patientFields },
           { new: true }
-        ).then(patient => res.json(patient));
+        ).then(patient => res.status(200).json(patient));
       } else {
-        new Patient(patientFields).save().then(patient => res.json(patient));
+        new Patient(patientFields)
+          .save()
+          .then(patient => res.status(200).json(patient));
       }
     });
   } catch (error) {

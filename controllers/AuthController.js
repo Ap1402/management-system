@@ -20,7 +20,7 @@ exports.loginUser = async (req, res) => {
     }
     // Generate authentication token using mongoose schema function
     const token = await user.generateAuthToken();
-    return res.json({ token });
+    return res.status(200).json({ token });
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("server error");
