@@ -25,5 +25,11 @@ router.post(
 );
 
 router.get("/", auth, AppointmentsController.getAllAppoinments);
+router.get("/me", auth, AppointmentsController.getActualUserAppointments);
+router.get(
+  "/user/:userID",
+  auth,
+  AppointmentsController.getAppointmentsByUserID
+);
 
 module.exports = router;

@@ -1,10 +1,17 @@
-const jwt = require("jsonwebtoken");
-const config = require("config");
-const User = require("../models/User");
+const { roles } = require("../roles");
 
-module.exports = async function(req, res, next) {
-  try {
-  } catch (err) {
-    res.status(401).json({ msg: "Server error, no authorized" });
-  }
+exports.grantAccess = function(action, resource) {
+  return async (req, res, next) => {
+    try {
+      const permission = roles.can(req.user.role)[action](resource);
+      if (!permission.granted) {
+        return res.status(401).json({
+          error: "You don't have enough permission to perform this action"
+        });
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
 };

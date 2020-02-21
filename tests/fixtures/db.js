@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const User = require("../../models/User");
+const Doctor = require("../../models/Doctor");
+const Appointment = require("../../models/Appointment");
+
 const config = require("config");
 
 const userOneId = new mongoose.Types.ObjectId();
@@ -42,6 +45,7 @@ const doctorOne = {
 const setupDatabase = async () => {
   await User.deleteMany();
   await Doctor.deleteMany();
+  await Appointment.deleteMany();
 
   await new User(userOne).save();
   await new User(userTwo).save();
