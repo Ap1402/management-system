@@ -7,7 +7,8 @@
 2) Type "npm install" to install required node modules 
 3) Create a file "default.json" inside "config" folder and write the following code inside:
 
-```{
+```
+{
   "mongoURI": "(write here your mongo db connection settings, without () )",
   "jwtSecret": "secretTokenManagementSystem"
 } 
