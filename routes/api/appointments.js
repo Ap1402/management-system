@@ -3,10 +3,11 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check } = require("express-validator");
 const AppointmentsController = require("../../controllers/AppointmentsController");
+const acl = require("../../middleware/acl");
 
-//@route Post api/users
-//@desc Create Patient user
-//@access Public
+//@route Post api/appointments
+//@desc Create Appointment user
+//@access Private
 router.post(
   "/",
   [
@@ -21,14 +22,29 @@ router.post(
       .isEmpty()
   ],
   auth,
+  acl.grantAccess("createOwn", "appointment"),
   AppointmentsController.createAppointment
 );
 
+// GET all Appointments
+//@access Private, doctor/admin only
 router.get("/", auth, AppointmentsController.getAllAppoinments);
-router.get("/me", auth, AppointmentsController.getActualUserAppointments);
+
+// GET all current user Appointments
+//@access Private, current User Only.
+router.get(
+  "/me",
+  auth,
+  acl.grantAccess("readOwn", "appointment"),
+  AppointmentsController.getActualUserAppointments
+);
+
+// GET all appointments by user ID
+//@access Private, doctor/admin only
 router.get(
   "/user/:userID",
   auth,
+  acl.grantAccess("readAny", "appointment"),
   AppointmentsController.getAppointmentsByUserID
 );
 

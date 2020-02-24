@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check } = require("express-validator");
 const usersController = require("../../controllers/UsersController");
+const acl = require("../../middleware/acl");
 
 //@route Post api/users
 //@desc REGISTER user
@@ -25,19 +26,11 @@ router.post(
 //@route GET api/users
 //@desc GET ALL registered users
 //@access private
-router.get("/", auth, usersController.getAllUsers);
-
-//@route delete api/users/:id
-//@desc DELETE user by id
-//@access private
-router.delete("/:id", auth, async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    res.json(users);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("server error");
-  }
-});
+router.get(
+  "/",
+  auth,
+  acl.grantAccess("readAny", "patient"),
+  usersController.getAllUsers
+);
 
 module.exports = router;

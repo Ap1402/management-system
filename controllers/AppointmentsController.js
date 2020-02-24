@@ -7,10 +7,20 @@ exports.createAppointment = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { selectedDate, description, requester, doctor } = req.body;
+    const {
+      selectedDate,
+      selectedHour,
+      selectedMinutes,
+      description,
+      requester,
+      doctor
+    } = req.body;
 
-    const appointmentFields = {};
-    appointmentFields.selectedDate = selectedDate;
+    const appointmentFields = { selectedSchedule: {} };
+    appointmentFields.selectedSchedule.selectedDate = selectedDate;
+    appointmentFields.selectedSchedule.selectedHour = selectedHour;
+    appointmentFields.selectedSchedule.selectedMinutes = selectedMinutes;
+
     appointmentFields.description = description;
     appointmentFields.requester = req.user._id;
     appointmentFields.doctor = doctor;

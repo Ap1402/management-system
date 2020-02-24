@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check } = require("express-validator");
 const PatientsController = require("../../controllers/PatientsController");
+const acl = require("../../middleware/acl");
 
 //@route Post api/users
 //@desc Create Patient user
@@ -21,6 +22,7 @@ router.post(
       .isEmpty()
   ],
   auth,
+  acl.grantAccess("createOwn", "patient"),
   PatientsController.createPatient
 );
 

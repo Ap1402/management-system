@@ -7,12 +7,12 @@ exports.createDoctor = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { start, end, field, userID } = req.body;
+    const { schedule, unavaliableDates, field, userID } = req.body;
 
-    const doctorFields = { schedule: {} };
-    doctorFields.schedule.start = start;
-    doctorFields.schedule.end = end;
+    const doctorFields = {};
+    doctorFields.schedule = schedule;
     doctorFields.field = field;
+    doctorFields.unavaliableDates = unavaliableDates;
     doctorFields.user = userID;
 
     Doctor.findOne({ user: userID }).then(doctor => {

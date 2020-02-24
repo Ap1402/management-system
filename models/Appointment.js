@@ -14,9 +14,19 @@ const AppointmentSchema = new mongoose.Schema(
       ref: "doctor",
       required: [true, "A doctor is needed"]
     },
-    selectedDate: {
-      type: Date,
-      required: [true, "A date is required"]
+    selectedSchedule: {
+      selectedDate: {
+        type: Date,
+        required: [true, "A date is required"]
+      },
+      selectedHour: {
+        type: String,
+        required: [true, "A specific hour is required"]
+      },
+      selectedMinutes: {
+        type: String,
+        required: [true, "minutes are required"]
+      }
     },
     description: {
       type: String,
@@ -27,6 +37,11 @@ const AppointmentSchema = new mongoose.Schema(
       default: ""
     },
     status: {
+      accepted: {
+        type: Boolean,
+        default: false,
+        required: true
+      },
       completed: {
         type: Boolean,
         default: false,
@@ -40,4 +55,14 @@ const AppointmentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+AppointmentSchema.virtual("fullTime").get(function() {
+  return selectedSchedule.selectedHour + ":" + selectedSchedule.selectedMinutes;
+});
+
+/* AppointmentSchema.methods.setAppointmentCompleted = async function() {
+  const apppointment = this;
+  apppointment.status.completed = true;
+  apppointment.status.completationDate = Date.now();
+  await apppointment.save();
+}; */
 module.exports = Appointment = mongoose.model("appointment", AppointmentSchema);

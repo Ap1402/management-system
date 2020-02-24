@@ -5,6 +5,7 @@ exports.roles = (function() {
   ac.grant("patient")
     .readOwn("patient")
     .updateOwn("patient")
+    .createOwn("patient")
     .createOwn("appointment")
     .readOwn("appointment")
     .updateOwn("appointment")
