@@ -11,7 +11,7 @@ exports.createAppointment = async (req, res) => {
       selectedDate,
       selectedHour,
       selectedMinutes,
-      description,
+      reason,
       requester,
       doctor
     } = req.body;
@@ -20,14 +20,19 @@ exports.createAppointment = async (req, res) => {
     appointmentFields.selectedSchedule.selectedDate = selectedDate;
     appointmentFields.selectedSchedule.selectedHour = selectedHour;
     appointmentFields.selectedSchedule.selectedMinutes = selectedMinutes;
-
-    appointmentFields.description = description;
-    appointmentFields.requester = req.user._id;
     appointmentFields.doctor = doctor;
+    appointmentFields.reason = reason;
+    if (!req.user.role == "patient") {
+      if (req.body.requester) {
+        appointmentFields.requester = requester;
+      }
+    } else {
+      appointmentFields.requester = req.user._id;
+    }
 
     new Appointment(appointmentFields)
       .save()
-      .then(appointment => res.status(201).json(appointment));
+      .then(appointment => res.status(200).json(appointment));
   } catch (error) {
     console.error(error.message);
     return res.status(500).send("server error");
@@ -40,7 +45,7 @@ exports.getAllAppoinments = async (req, res) => {
     res.status(200).json(appointments);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("server error");
+    return res.status(500).send("server error");
   }
 };
 
@@ -50,7 +55,7 @@ exports.getActualUserAppointments = async (req, res) => {
     res.status(200).json(appointments);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("server error");
+    return res.status(500).send("server error");
   }
 };
 

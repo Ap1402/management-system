@@ -11,13 +11,19 @@ const acl = require("../../middleware/acl");
 router.post(
   "/",
   [
-    check("doctor", "doctor is required")
+    check("doctor", "A doctor is required")
       .not()
       .isEmpty(),
-    check("selectedDate", "selectedDate is required")
+    check("selectedDate", "You need to select a date")
       .not()
       .isEmpty(),
-    check("description", "description is required")
+    check("reason", "A reason is required")
+      .not()
+      .isEmpty(),
+    check("selectedHour", "A hour is required")
+      .not()
+      .isEmpty(),
+    check("selectedMinutes", "Please select minutes")
       .not()
       .isEmpty()
   ],

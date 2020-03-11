@@ -7,18 +7,27 @@ exports.createPatient = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { address, dni, history } = req.body;
+    const { address, dni, birthDate, allergies, specificInfo } = req.body;
 
     const patientFields = {};
     patientFields.address = address;
     patientFields.dni = dni;
-    patientFields.history = history;
-    patientFields.user = req.user._id;
+    patientFields.birthDate = birthDate;
+    patientFields.allergies = allergies;
+    patientFields.specificInfo = specificInfo;
 
-    Patient.findOne({ user: req.user._id }).then(patient => {
+    if (!req.user.role == "patient") {
+      if (req.body.userId) {
+        patientFields.user = req.body.userId;
+      }
+    } else {
+      patientFields.user = req.user._id;
+    }
+
+    Patient.findOne({ user: patientFields.user }).then(patient => {
       if (patient) {
         Patient.findOneAndUpdate(
-          { user: req.user._id },
+          { user: patientFields.user },
           { $set: patientFields },
           { new: true }
         ).then(patient => res.status(200).json(patient));
@@ -41,7 +50,7 @@ exports.deletePatientById = async (req, res) => {
   }
   try {
     const patient = await Patient.findByIdAndDelete(req.params.patient_id);
-    res.status(201).json(patient);
+    res.status(200).json(patient);
   } catch (err) {
     console.error(err);
     res.status(400).json("Server problem");
@@ -51,7 +60,7 @@ exports.deletePatientById = async (req, res) => {
 exports.getAllPatients = async (req, res) => {
   try {
     const patients = await Patient.find();
-    res.status(201).json(patients);
+    res.status(200).json(patients);
   } catch (err) {
     console.error(err);
     res.status(400).json("Server problem");

@@ -8,10 +8,10 @@ exports.getAllDoctorsByDepartment = async (req, res) => {
       name: req.params.name
     }).populate("doctors", ["name", "schedule"]);
 
-    res.status(201).json(department);
+    res.status(200).json(department);
   } catch (err) {
     console.error(err);
-    res.status(400).json("Server problem");
+    return res.status(400).send("Oops, somethin went wrong");
   }
 };
 
@@ -25,10 +25,10 @@ exports.assignDoctorsToDepartment = async (req, res) => {
       { $addToSet: { doctors: doctors } }
     );
 
-    res.status(201).json(department);
+    return res.status(201).json(department);
   } catch (err) {
     console.error(err);
-    res.status(400).json("Server problem");
+    return res.status(400).send("Oops, somethin went wrong");
   }
 };
 
@@ -39,10 +39,10 @@ exports.getAllDepartments = async (req, res) => {
       "name"
     ]);
 
-    res.status(201).json(departments);
+    res.status(200).json(departments);
   } catch (err) {
     console.error(err);
-    res.status(400).json("Server problem");
+    return res.status(400).send("Oops, somethin went wrong");
   }
 };
 
@@ -56,6 +56,6 @@ exports.createDepartment = async (req, res) => {
     res.status(201).json(newDepartment);
   } catch (err) {
     console.error(err);
-    res.status(400).json("Server problem");
+    return res.status(400).send("Oops, somethin went wrong");
   }
 };

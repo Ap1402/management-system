@@ -48,7 +48,7 @@ exports.getDatesById = async (req, res) => {
     );
     console.log(new Date("2020-2-28"));
     res
-      .status(201)
+      .status(200)
       .json({ workingDays: workingDays, unavaliableDates: unavaliableDates });
   } catch (error) {
     console.error(error);
@@ -62,7 +62,7 @@ exports.getTimeScheduleByDate = async (req, res) => {
       req.params.doctor_id,
       req.params.date
     );
-    res.status(201).json({ schedule, unavaliableTime });
+    res.status(200).json({ schedule, unavaliableTime });
   } catch (error) {
     console.error(error);
     res.status(400).send("Server Error");
@@ -72,7 +72,7 @@ exports.getTimeScheduleByDate = async (req, res) => {
 exports.getAllDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find().populate("department", "name");
-    res.status(201).json(doctors);
+    res.status(200).json(doctors);
   } catch (err) {
     console.error(err);
     res.status(400).json("Server problem");
@@ -82,7 +82,7 @@ exports.getAllDoctors = async (req, res) => {
 exports.deleteDoctorById = async (req, res) => {
   try {
     const doctors = await Doctor.findByIdAndDelete(req.params.doctor_id);
-    res.status(201).json(doctors);
+    res.status(200).json(doctors);
   } catch (err) {
     console.error(err);
     res.status(400).json("Server problem");

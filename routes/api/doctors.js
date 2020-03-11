@@ -18,12 +18,22 @@ router.post(
 //@route GET api/doctors
 //@desc Get all doctors
 //@access private
-router.get("/", auth, DoctorsController.getAllDoctors);
+router.get(
+  "/",
+  auth,
+  acl.grantAccess("readAny", "doctor"),
+  DoctorsController.getAllDoctors
+);
 
 //@route GET doctors/check-date/ ID
 //@desc Gets unavaliable dates and working days by doctor ID
 //@access private
-router.get("/get-dates/:doctor_id", auth, DoctorsController.getDatesById);
+router.get(
+  "/get-dates/:doctor_id",
+  auth,
+  acl.grantAccess("readAny", "doctor"),
+  DoctorsController.getDatesById
+);
 
 //@route GET doctors/get-timebydate/ ID / date
 //@desc Gets unavaliable hours and work schedule by date
@@ -31,6 +41,8 @@ router.get("/get-dates/:doctor_id", auth, DoctorsController.getDatesById);
 router.get(
   "/get-timebydate/:doctor_id/:date",
   auth,
+  acl.grantAccess("readAny", "doctor"),
+
   DoctorsController.getTimeScheduleByDate
 );
 

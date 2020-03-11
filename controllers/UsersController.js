@@ -10,7 +10,7 @@ exports.registerUser = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { role, name, email, password } = req.body;
+    const { role, name, email, password, contact } = req.body;
     let user = await User.findOne({ email: email });
     if (user) {
       return res.status(400).json({ errors: [{ msg: "email already exist" }] });
@@ -20,7 +20,8 @@ exports.registerUser = async (req, res) => {
       name: name,
       email: email,
       password: password,
-      role: role
+      role: role,
+      contact: contact
     });
 
     await newUser.save();

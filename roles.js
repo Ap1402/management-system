@@ -9,7 +9,9 @@ exports.roles = (function() {
     .createOwn("appointment")
     .readOwn("appointment")
     .updateOwn("appointment")
-    .deleteOwn("appointment");
+    .deleteOwn("appointment")
+    .readAny("doctor")
+    .readAny("department");
 
   ac.grant("doctor")
     .readAny("patient")
@@ -34,7 +36,10 @@ exports.roles = (function() {
     .updateAny("doctor")
     .deleteAny("patient")
     .deleteAny("doctor")
-    .deleteAny("appointment");
+    .deleteAny("appointment")
+    .deleteAny("department")
+    .createAny("department")
+    .updateAny("department");
 
   return ac;
 })();

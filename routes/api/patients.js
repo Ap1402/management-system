@@ -17,13 +17,20 @@ router.post(
     check("dni", "dni is required")
       .not()
       .isEmpty(),
-    check("history", "history is required")
+    check("birthDate", "birthDate is required")
       .not()
       .isEmpty()
   ],
   auth,
   acl.grantAccess("createOwn", "patient"),
   PatientsController.createPatient
+);
+
+router.get(
+  "/",
+  auth,
+  acl.grantAccess("readAny", "patient"),
+  PatientsController.getAllPatients
 );
 
 module.exports = router;
