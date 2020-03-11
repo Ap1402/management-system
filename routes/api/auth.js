@@ -4,8 +4,8 @@ const auth = require("../../middleware/auth");
 const { check } = require("express-validator");
 const AuthController = require("../../controllers/AuthController");
 
-//@route POst /auth/
-//@desc POST user login
+//@route Post /auth/
+//@desc User login route
 //@access Public
 router.post(
   "/",

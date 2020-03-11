@@ -24,14 +24,20 @@ const DoctorSchema = new mongoose.Schema(
         }
       }
     ],
+    minutesGapBetweenAppointments: {
+      type: String,
+      //Minutes
+      enum: ["15", "30", "45", "60"]
+    },
     unavaliableDates: [
       {
         type: Date
       }
     ],
-    field: {
-      type: String,
-      required: true
+    department: {
+      type: Schema.Types.ObjectId,
+      ref: "department",
+      required: [true, "Doctor needs to have a department assigned"]
     },
     user: {
       type: Schema.Types.ObjectId,

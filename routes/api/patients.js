@@ -6,7 +6,7 @@ const PatientsController = require("../../controllers/PatientsController");
 const acl = require("../../middleware/acl");
 
 //@route Post api/users
-//@desc Create Patient user
+//@desc Create Patient information for user
 //@access Public
 router.post(
   "/",

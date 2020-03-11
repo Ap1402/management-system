@@ -6,6 +6,10 @@ const PatientSchema = new mongoose.Schema(
     address: {
       type: String
     },
+    birthDate: {
+      type: Date,
+      required: [true, "Your birthdate is required"]
+    },
     dni: {
       type: String,
       required: [true, "dni is required"]
@@ -14,7 +18,10 @@ const PatientSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "user"
     },
-    history: {
+    allergies: {
+      type: String
+    },
+    specificInfo: {
       type: String
     }
   },

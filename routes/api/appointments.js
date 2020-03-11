@@ -26,9 +26,15 @@ router.post(
   AppointmentsController.createAppointment
 );
 
-// GET all Appointments
+//@route GET api/appointments
+//@desc get all appointments
 //@access Private, doctor/admin only
-router.get("/", auth, AppointmentsController.getAllAppoinments);
+router.get(
+  "/",
+  auth,
+  acl.grantAccess("readAny", "appointment"),
+  AppointmentsController.getAllAppoinments
+);
 
 // GET all current user Appointments
 //@access Private, current User Only.

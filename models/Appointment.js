@@ -28,7 +28,7 @@ const AppointmentSchema = new mongoose.Schema(
         required: [true, "minutes are required"]
       }
     },
-    description: {
+    reason: {
       type: String,
       required: true
     },

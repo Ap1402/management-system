@@ -19,3 +19,4 @@ app.use("/api/users", require("./routes/api/users"));
 app.use("/api/patients", require("./routes/api/patients"));
 app.use("/api/doctors", require("./routes/api/doctors"));
 app.use("/api/appointments", require("./routes/api/appointments"));
+app.use("/api/departments", require("./routes/api/departments"));

@@ -33,3 +33,27 @@ exports.createPatient = async (req, res) => {
     return res.status(500).send("server error");
   }
 };
+
+exports.deletePatientById = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const patient = await Patient.findByIdAndDelete(req.params.patient_id);
+    res.status(201).json(patient);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json("Server problem");
+  }
+};
+
+exports.getAllPatients = async (req, res) => {
+  try {
+    const patients = await Patient.find();
+    res.status(201).json(patients);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json("Server problem");
+  }
+};
