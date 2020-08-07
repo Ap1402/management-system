@@ -3,22 +3,16 @@ const Schema = mongoose.Schema;
 
 const DepartmentSchemas = new mongoose.Schema(
   {
-    doctors: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "doctor"
-      }
-    ],
     name: {
       type: String,
       unique: [true, "A department with this name already exists!"],
-      required: [true, "A name for the deparment is needed!"]
+      required: [true, "A name for the deparment is needed!"],
     },
     status: {
       type: Boolean,
       default: true,
-      required: true
-    }
+      required: true,
+    },
   },
   { timestamps: true }
 );

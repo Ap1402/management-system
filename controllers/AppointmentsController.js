@@ -13,7 +13,7 @@ exports.createAppointment = async (req, res) => {
       selectedMinutes,
       reason,
       requester,
-      doctor
+      doctor,
     } = req.body;
 
     const appointmentFields = { selectedSchedule: {} };
@@ -32,7 +32,7 @@ exports.createAppointment = async (req, res) => {
 
     new Appointment(appointmentFields)
       .save()
-      .then(appointment => res.status(200).json(appointment));
+      .then((appointment) => res.status(200).json(appointment));
   } catch (error) {
     console.error(error.message);
     return res.status(500).send("server error");
@@ -62,7 +62,7 @@ exports.getActualUserAppointments = async (req, res) => {
 exports.getAppointmentsByUserID = async (req, res) => {
   try {
     const appointments = await Appointment.find({
-      requester: req.params.userID
+      requester: req.params.userID,
     });
     res.status(200).json(appointments);
   } catch (err) {

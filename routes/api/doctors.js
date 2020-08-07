@@ -10,6 +10,10 @@ const acl = require("../../middleware/acl");
 //@access Private admin only
 router.post(
   "/",
+  [
+    check("userId", "Please include a user").notEmpty(),
+    check("departmentId", "Please include a department for this doctor").notEmpty()
+  ],
   auth,
   acl.grantAccess("createAny", "doctor"),
   DoctorsController.createDoctor
@@ -55,5 +59,16 @@ router.delete(
   acl.grantAccess("deleteAny", "doctor"),
   DoctorsController.deleteDoctorById
 );
+
+//@route POST doctors/set-schedul/:doctorId
+//@desc POST set schedule and unavaliable dates to doctor id
+//@access private, admin only or actual doctor logged
+router.post(
+  "/set-schedule/:doctorId",
+  auth,
+  acl.grantAccess("updateOwn", "doctor"),
+  DoctorsController.setDoctorSchedule
+);
+
 
 module.exports = router;

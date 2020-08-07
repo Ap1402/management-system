@@ -5,7 +5,7 @@ const { validationResult } = require("express-validator");
 exports.getAllDoctorsByDepartment = async (req, res) => {
   try {
     const department = await Department.find({
-      name: req.params.name
+      name: req.params.name,
     }).populate("doctors", ["name", "schedule"]);
 
     res.status(200).json(department);
@@ -36,7 +36,7 @@ exports.getAllDepartments = async (req, res) => {
   try {
     const departments = await Department.find().populate("doctors", [
       "_id",
-      "name"
+      "name",
     ]);
 
     res.status(200).json(departments);
@@ -48,7 +48,7 @@ exports.getAllDepartments = async (req, res) => {
 
 exports.createDepartment = async (req, res) => {
   const newDepartment = new Department({
-    name: req.body.name
+    name: req.body.name,
   });
   try {
     await newDepartment.save();

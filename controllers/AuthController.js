@@ -55,7 +55,7 @@ exports.logoutActualToken = async (req, res) => {
         .status(400)
         .json({ errors: [{ msg: "You are already logged out" }] });
     }
-    user.tokens = user.tokens.filter(token => {
+    user.tokens = user.tokens.filter((token) => {
       return token.token !== req.token;
     });
 

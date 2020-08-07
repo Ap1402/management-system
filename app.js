@@ -5,12 +5,12 @@ const cors = require("cors");
 const PORT = 4000;
 const connectDB = require("./config/database");
 
-//Database Connection
-
 connectDB();
+
 
 app.use(cors());
 app.use(bodyParser.json());
+
 app.get("/", (req, res) => res.send("API RUNNING"));
 
 app.use("/api/auth", require("./routes/api/auth"));

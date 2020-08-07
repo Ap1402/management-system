@@ -24,17 +24,17 @@ exports.createPatient = async (req, res) => {
       patientFields.user = req.user._id;
     }
 
-    Patient.findOne({ user: patientFields.user }).then(patient => {
+    Patient.findOne({ user: patientFields.user }).then((patient) => {
       if (patient) {
         Patient.findOneAndUpdate(
           { user: patientFields.user },
           { $set: patientFields },
           { new: true }
-        ).then(patient => res.status(200).json(patient));
+        ).then((patient) => res.status(200).json(patient));
       } else {
         new Patient(patientFields)
           .save()
-          .then(patient => res.status(200).json(patient));
+          .then((patient) => res.status(201).json(patient));
       }
     });
   } catch (error) {

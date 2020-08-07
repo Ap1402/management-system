@@ -16,6 +16,21 @@ router.post(
   AuthController.loginUser
 );
 
+
+router.get(
+  "/test",auth, async(req, res)=>{
+    try{
+      const user = await User.findById(req.user.id).select('-password');
+      res.status(200).json(user)
+      
+    }catch(err){
+      console.log(err);
+      res.status(500).send();
+    }
+
+  }
+  );
+
 router.post("/logout/me", auth, AuthController.logoutActualToken);
 
 router.post("/logout/all", auth, AuthController.logoutAllTokens);

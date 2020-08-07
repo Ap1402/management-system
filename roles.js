@@ -19,6 +19,7 @@ exports.roles = (function() {
     .updateAny("patient")
     .deleteAny("patient")
     .readOwn("doctor")
+    .readAny("doctor")
     .updateOwn("doctor")
     .deleteOwn("appointment")
     .createOwn("appointment")

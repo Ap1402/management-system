@@ -1,57 +1,67 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 
 const UserSchema = new mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
-      required: [true, "Name is required"]
+      required: [false, "Name is required"],
+    },
+    dni:{
+      type: String,
+      required: [false, "A DNI is required"],
+    },
+    lastName: {
+      type: String,
+      required: [false, "Lastname is required"],
     },
     contact: [
       {
         phoneNumber: {
-          type: String
-        }
-      }
+          type: String,
+        },
+      },
     ],
     email: {
       type: String,
       required: [true, "email is required"],
-      unique: true,
+      unique: [true, "There is a user created with this email"],
       lowercase: true,
-      trim: true
+      trim: true,
     },
     password: {
       type: String,
-      required: [true, "password is required"]
+      required: [true, "password is required"],
     },
     role: {
       type: String,
       default: "patient",
       enum: ["doctor", "admin", "patient"],
-      required: [true, "role is required"]
+      required: [true, "role is required"],
     },
     active: {
       type: Boolean,
-      default: true
+      default: true,
     },
     tokens: [
       {
         token: {
           type: String,
-          required: true
-        }
-      }
-    ]
+          required: true,
+        },
+      },
+    ],
   },
-  { timestamps: true }
+  { timestamps: true}
 );
 
+UserSchema.set('toObject', { virtuals: true })
+UserSchema.set('toJSON', { virtuals: true })
+
 // Hash plain text password before saving or updating
-UserSchema.pre("save", async function(next) {
+UserSchema.pre("save", async function (next) {
   const user = this;
 
   if (user.isModified("password")) {
@@ -62,12 +72,17 @@ UserSchema.pre("save", async function(next) {
   next();
 });
 
-UserSchema.methods.generateAuthToken = async function() {
+UserSchema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ user: { id: user.id } }, config.get("jwtSecret"));
   user.tokens = user.tokens.concat({ token });
   await user.save();
   return token;
 };
+
+UserSchema.virtual("fullname").get(function(){
+  const user = this;
+  return user.firstName + " " + user.lastName;
+});
 
 module.exports = User = mongoose.model("user", UserSchema);

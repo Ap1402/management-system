@@ -10,7 +10,6 @@ const acl = require("../../middleware/acl");
 //@access public
 router.get(
   "/",
-  acl.grantAccess("readAny", "department"),
   DepartmentsController.getAllDepartments
 );
 
@@ -35,7 +34,7 @@ router.post(
 );
 
 //@route GET api/departments/:department name
-//@desc get all doctros by department name
+//@desc get all doctors by department name
 //@access public
 router.get("/:name", DepartmentsController.getAllDoctorsByDepartment);
 

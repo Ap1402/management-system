@@ -11,15 +11,9 @@ const acl = require("../../middleware/acl");
 router.post(
   "/",
   [
-    check("address", "address is required")
-      .not()
-      .isEmpty(),
-    check("dni", "dni is required")
-      .not()
-      .isEmpty(),
-    check("birthDate", "birthDate is required")
-      .not()
-      .isEmpty()
+    check("address", "address is required").not().isEmpty(),
+    check("dni", "dni is required").not().isEmpty(),
+    check("birthDate", "birthDate is required").not().isEmpty(),
   ],
   auth,
   acl.grantAccess("createOwn", "patient"),

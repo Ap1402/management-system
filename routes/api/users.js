@@ -11,14 +11,13 @@ const acl = require("../../middleware/acl");
 router.post(
   "/",
   [
-    check("name", "Name is required")
-      .not()
-      .isEmpty(),
+    check("firstName", "firstName is required").not().isEmpty(),
+    check("lastName", "lastName is required").not().isEmpty(),
     check("email", "Please include a valid email").isEmail(),
     check(
       "password",
       "Please enter a password with 6 or more characters"
-    ).isLength({ min: 6 })
+    ).isLength({ min: 6 }),
   ],
   usersController.registerUser
 );
@@ -30,7 +29,7 @@ router.get(
   "/",
   auth,
   acl.grantAccess("readAny", "patient"),
-  usersController.getAllUsers
+  usersController.getAllActiveUsers
 );
 
 module.exports = router;

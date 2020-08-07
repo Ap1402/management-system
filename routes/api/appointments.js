@@ -11,21 +11,11 @@ const acl = require("../../middleware/acl");
 router.post(
   "/",
   [
-    check("doctor", "A doctor is required")
-      .not()
-      .isEmpty(),
-    check("selectedDate", "You need to select a date")
-      .not()
-      .isEmpty(),
-    check("reason", "A reason is required")
-      .not()
-      .isEmpty(),
-    check("selectedHour", "A hour is required")
-      .not()
-      .isEmpty(),
-    check("selectedMinutes", "Please select minutes")
-      .not()
-      .isEmpty()
+    check("doctor", "A doctor is required").not().isEmpty(),
+    check("selectedDate", "You need to select a date").not().isEmpty(),
+    check("reason", "A reason is required").not().isEmpty(),
+    check("selectedHour", "A hour is required").not().isEmpty(),
+    check("selectedMinutes", "Please select minutes").not().isEmpty(),
   ],
   auth,
   acl.grantAccess("createOwn", "appointment"),

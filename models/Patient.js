@@ -10,10 +10,6 @@ const PatientSchema = new mongoose.Schema(
       type: Date,
       required: [true, "Your birthdate is required"]
     },
-    dni: {
-      type: String,
-      required: [true, "dni is required"]
-    },
     user: {
       type: Schema.Types.ObjectId,
       ref: "user"

@@ -6,30 +6,36 @@ const User = require("../models/User");
 // User Sign up function
 exports.registerUser = async (req, res) => {
   const errors = validationResult(req);
+  
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+
   try {
-    const { role, name, email, password, contact } = req.body;
+
+    const { role, firstName, lastName, email, password, contact } = req.body;
+
     let user = await User.findOne({ email: email });
+
     if (user) {
-      return res.status(400).json({ errors: [{ msg: "email already exist" }] });
+      return res.status(400).json({ errors: [{ msg: "A user with this email is already registered" }] });
     }
 
     const newUser = new User({
-      name: name,
+      firstName: firstName,
+      lastName:lastName,
       email: email,
       password: password,
       role: role,
-      contact: contact
+      contact: contact,
     });
 
     await newUser.save();
 
     const payload = {
       user: {
-        id: newUser.id
-      }
+        id: newUser.id,
+      },
     };
 
     jwt.sign(
@@ -47,9 +53,9 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-exports.getAllUsers = async (req, res) => {
+exports.getAllActiveUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find({active:true}).select("-password -tokens -__v -active");
     res.status(201).json(users);
   } catch (err) {
     console.error(err.message);
