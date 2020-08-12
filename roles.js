@@ -1,7 +1,7 @@
 const AccessControl = require("accesscontrol");
 const ac = new AccessControl();
 
-exports.roles = (function() {
+exports.roles = (function () {
   ac.grant("patient")
     .readOwn("patient")
     .updateOwn("patient")
@@ -40,7 +40,8 @@ exports.roles = (function() {
     .deleteAny("appointment")
     .deleteAny("department")
     .createAny("department")
-    .updateAny("department");
+    .updateAny("department")
+    .updateAny("user");
 
   return ac;
 })();

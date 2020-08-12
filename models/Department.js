@@ -5,7 +5,7 @@ const DepartmentSchemas = new mongoose.Schema(
   {
     name: {
       type: String,
-      unique: [true, "A department with this name already exists!"],
+      unique: true,
       required: [true, "A name for the deparment is needed!"],
     },
     status: {

@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const PORT = 4000;
 const connectDB = require("./config/database");
+const errorMiddleware = require("./middleware/handleError");
 
 //Database Connection
 
@@ -20,3 +21,5 @@ app.use("/api/patients", require("./routes/api/patients"));
 app.use("/api/doctors", require("./routes/api/doctors"));
 app.use("/api/appointments", require("./routes/api/appointments"));
 app.use("/api/departments", require("./routes/api/departments"));
+
+app.use(errorMiddleware);

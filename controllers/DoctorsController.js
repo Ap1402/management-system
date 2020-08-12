@@ -2,13 +2,15 @@ const Doctor = require("../models/Doctor");
 const { validationResult } = require("express-validator");
 const dayjs = require("dayjs");
 var customParseFormat = require("dayjs/plugin/customParseFormat");
+const ErrorHandler = require("../helpers/ErrorHandler");
+
 dayjs.extend(customParseFormat);
 
 exports.createDoctor = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    next(new ErrorHandler("400", errors.array()));
   }
 
   try {
@@ -39,11 +41,16 @@ exports.createDoctor = async (req, res) => {
 };
 
 exports.getDatesById = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    next(new ErrorHandler("400", errors.array()));
+  }
+
   try {
     const { workingDays, unavaliableDates } = await Doctor.getUnavaliableDates(
-      req.params.doctor_id
+      req.params.doctorId
     );
-    console.log(new Date("2020-2-28"));
     res
       .status(200)
       .json({ workingDays: workingDays, unavaliableDates: unavaliableDates });
@@ -54,15 +61,19 @@ exports.getDatesById = async (req, res) => {
 };
 
 exports.getTimeScheduleByDate = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    next(new ErrorHandler("400", errors.array()));
+  }
   try {
     const { schedule, unavaliableTime } = await Doctor.getUnavaliableTime(
-      req.params.doctor_id,
+      req.params.doctorId,
       req.params.date
     );
     res.status(200).json({ schedule, unavaliableTime });
   } catch (error) {
-    console.error(error);
-    res.status(400).send("Server Error");
+    next(err);
   }
 };
 
@@ -74,22 +85,61 @@ exports.getAllDoctors = async (req, res) => {
       .populate("user", "firstName lastName");
     res.status(200).json(doctors);
   } catch (err) {
-    console.error(err);
-    res.status(400).json("Server problem");
+    next(err);
+  }
+};
+
+exports.getDoctorById = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    next(new ErrorHandler("400", errors.array()));
+  }
+
+  try {
+    const { doctorId } = req.params;
+    const doctor = await Doctor.findById(doctorId)
+      .select("department user schedule")
+      .populate("department", "name")
+      .populate("user", "firstName lastName");
+    if (!doctor) {
+      res
+        .status(404)
+        .send({ errors: [{ msg: "there is no doctor with this id" }] });
+    }
+    res.status(200).json(doctor);
+  } catch (err) {
+    next(err);
   }
 };
 
 exports.deleteDoctorById = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    next(new ErrorHandler("400", errors.array()));
+  }
+
   try {
-    const doctors = await Doctor.findByIdAndDelete(req.params.doctor_id);
+    const doctors = await Doctor.findByIdAndDelete(req.params.doctorId);
+    if (!doctor) {
+      res
+        .status(404)
+        .send({ errors: [{ msg: "there is no doctor with this id" }] });
+    }
     res.status(200).json(doctors);
   } catch (err) {
-    console.error(err);
-    res.status(400).json("Server problem");
+    next(err);
   }
 };
 
 exports.setDoctorSchedule = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    next(new ErrorHandler("400", errors.array()));
+  }
+
   try {
     const { schedule, unavaliableDates } = req.body;
 
@@ -103,13 +153,16 @@ exports.setDoctorSchedule = async (req, res) => {
 
     const doctor = await Doctor.findOne({ _id: doctorId });
 
-    if (!doctor ) {
+    if (!doctor) {
       return res
         .status(400)
         .json({ errors: ["There is no doctor with this id"] });
     }
 
-    if ((req.user.role!=='admin')&&!(String(doctor.user._id)===String(req.user._id)) ) {
+    if (
+      req.user.role !== "admin" &&
+      !(String(doctor.user._id) === String(req.user._id))
+    ) {
       return res
         .status(403)
         .json({ errors: ["You don't have enough permission to do that!"] });
@@ -139,11 +192,12 @@ exports.setDoctorSchedule = async (req, res) => {
           .json({ errors: [schedule[i].end + " is not a valid time"] });
       }
 
-
-      if(schedule[i].start>schedule[i].end){
-        return res
-          .status(400)
-          .json({ errors: ["Starting time in the schedule has to be earlier than ending hour!"] });
+      if (schedule[i].start > schedule[i].end) {
+        return res.status(400).json({
+          errors: [
+            "Starting time in the schedule has to be earlier than ending hour!",
+          ],
+        });
       }
     }
 
@@ -157,12 +211,11 @@ exports.setDoctorSchedule = async (req, res) => {
           .json({ errors: [unavaliableDates[i] + " is not a valid date"] });
       }
     }
-    doctor.schedule=schedule;
-    doctor.unavaliableDates=unavaliableDates;
+    doctor.schedule = schedule;
+    doctor.unavaliableDates = unavaliableDates;
     const result = await doctor.save();
     res.status(200).json(result);
   } catch (err) {
-    console.log(err);
-    return res.status(400).json(err);
+    next(err);
   }
 };

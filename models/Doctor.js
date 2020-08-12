@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Appointment = require("./Appointment");
+const dayjs = require("dayjs");
 
 const DoctorSchema = new mongoose.Schema(
   {
@@ -42,6 +43,7 @@ const DoctorSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "user",
       required: [true, "Doctor needs to have an User assigned"],
+      unique: true,
     },
     active: {
       type: Boolean,
@@ -60,7 +62,7 @@ DoctorSchema.statics.getUnavaliableDates = async function (doctorID) {
       "selectedSchedule.selectedDate": { $gte: Date.now() },
     }).select("selectedSchedule.selectedDate");
     const doctor = await Doctor.findById(doctorID);
-    console.log(futureAppointments);
+
     // Getting unavaliable Dates from doctor and actual appointments
     const unavaliableDates = [];
     futureAppointments.forEach((appointment) => {
@@ -76,7 +78,7 @@ DoctorSchema.statics.getUnavaliableDates = async function (doctorID) {
     });
     return { workingDays, unavaliableDates };
   } catch (error) {
-    return error;
+    next(error);
   }
 };
 
@@ -84,21 +86,18 @@ DoctorSchema.statics.getUnavaliableTime = async function (
   doctorID,
   dateString
 ) {
-  const date = new Date(dateString);
+  const date = dayjs(dateString).toISOString();
+
   try {
     const appointmentsByDate = await Appointment.find({
       doctor: doctorID,
-      "selectedSchedule.selectedDate": date,
+      "selectedSchedule.selectedDate": new Date(dateString),
     });
     // Creating unavaliableTime
     const unavaliableTime = [];
 
     appointmentsByDate.forEach((appointment) => {
-      unavaliableTime.push(
-        appointment.selectedSchedule.selectedHour +
-          ":" +
-          appointment.selectedSchedule.selectedMinutes
-      );
+      unavaliableTime.push(appointment.selectedSchedule.selectedHour);
     });
     // creating schedule
     const schedule = {};
@@ -107,14 +106,14 @@ DoctorSchema.statics.getUnavaliableTime = async function (
     }).select("schedule");
     // Iterating through schedule to find specifid day
     docSchedule.schedule.forEach((obj) => {
-      if (obj.day == date.getDay()) {
+      if (obj.day == dayjs(date).day()) {
         schedule.start = obj.start;
         schedule.end = obj.end;
       }
     });
     return { schedule, unavaliableTime };
   } catch (error) {
-    throw Error(error);
+    next(error);
   }
 };
 

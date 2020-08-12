@@ -8,10 +8,7 @@ const acl = require("../../middleware/acl");
 //@route GET api/departments/
 //@desc get all departments
 //@access public
-router.get(
-  "/",
-  DepartmentsController.getAllDepartments
-);
+router.get("/", DepartmentsController.getAllDepartments);
 
 //@route Post api/departments/
 //@desc create or update department
@@ -33,9 +30,13 @@ router.post(
   DepartmentsController.assignDoctorsToDepartment
 );
 
-//@route GET api/departments/:department name
+//@route GET api/departments/doctors/:department name
 //@desc get all doctors by department name
 //@access public
-router.get("/:name", DepartmentsController.getAllDoctorsByDepartment);
+router.get(
+  "/doctors/:name",
+  check("name", "There is no department name specified").isString().notEmpty(),
+  DepartmentsController.getAllDoctorsByDepartment
+);
 
 module.exports = router;

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const ErrorHandler = require("../helpers/ErrorHandler");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -9,7 +10,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [false, "Name is required"],
     },
-    dni:{
+    dni: {
       type: String,
       required: [false, "A DNI is required"],
     },
@@ -27,7 +28,7 @@ const UserSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "email is required"],
-      unique: [true, "There is a user created with this email"],
+      unique: true,
       lowercase: true,
       trim: true,
     },
@@ -54,11 +55,11 @@ const UserSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true}
+  { timestamps: true }
 );
 
-UserSchema.set('toObject', { virtuals: true })
-UserSchema.set('toJSON', { virtuals: true })
+UserSchema.set("toObject", { virtuals: true });
+UserSchema.set("toJSON", { virtuals: true });
 
 // Hash plain text password before saving or updating
 UserSchema.pre("save", async function (next) {
@@ -68,7 +69,6 @@ UserSchema.pre("save", async function (next) {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
   }
-
   next();
 });
 
@@ -80,7 +80,7 @@ UserSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-UserSchema.virtual("fullname").get(function(){
+UserSchema.virtual("fullname").get(function () {
   const user = this;
   return user.firstName + " " + user.lastName;
 });

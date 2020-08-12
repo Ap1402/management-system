@@ -8,9 +8,7 @@ module.exports = async function (req, res, next) {
 
   // check if not token
   if (!token) {
-    return res.status(401).json({
-      msg: "No token, authorization denied",
-    });
+    next(new ErrorHandler("401", "No token, authorization denied"));
   }
   try {
     const decoded = jwt.verify(token, config.get("jwtSecret"));
@@ -24,6 +22,6 @@ module.exports = async function (req, res, next) {
     req.token = token;
     next();
   } catch (err) {
-    res.status(401).json({ msg: "Token is not valid" });
+    next(err);
   }
 };

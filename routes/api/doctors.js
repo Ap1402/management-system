@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
-const { check } = require("express-validator");
+const { check, param } = require("express-validator");
 const DoctorsController = require("../../controllers/DoctorsController");
 const acl = require("../../middleware/acl");
 
@@ -12,7 +12,10 @@ router.post(
   "/",
   [
     check("userId", "Please include a user").notEmpty(),
-    check("departmentId", "Please include a department for this doctor").notEmpty()
+    check(
+      "departmentId",
+      "Please include a department for this doctor"
+    ).notEmpty(),
   ],
   auth,
   acl.grantAccess("createAny", "doctor"),
@@ -29,13 +32,25 @@ router.get(
   DoctorsController.getAllDoctors
 );
 
+//@route GET api/doctors
+//@desc Get doctor by Id
+//@access private patient
+router.get(
+  "/:doctorId",
+  auth,
+  acl.grantAccess("readAny", "doctor"),
+  param("doctorId", "This is not a valid doctor id").isMongoId().notEmpty(),
+  DoctorsController.getDoctorById
+);
+
 //@route GET doctors/check-date/ ID
 //@desc Gets unavaliable dates and working days by doctor ID
 //@access private
 router.get(
-  "/get-dates/:doctor_id",
+  "/get-dates/:doctorId",
   auth,
   acl.grantAccess("readAny", "doctor"),
+  param("doctorId", "This is not a valid doctor id").isMongoId().notEmpty(),
   DoctorsController.getDatesById
 );
 
@@ -43,10 +58,10 @@ router.get(
 //@desc Gets unavaliable hours and work schedule by date
 //@access private
 router.get(
-  "/get-timebydate/:doctor_id/:date",
+  "/get-timebydate/:doctorId/:date",
   auth,
   acl.grantAccess("readAny", "doctor"),
-
+  param("doctorId", "This is not a valid doctor id").isMongoId().notEmpty(),
   DoctorsController.getTimeScheduleByDate
 );
 
@@ -54,21 +69,22 @@ router.get(
 //@desc DELETE doctor by id
 //@access private, admin only
 router.delete(
-  "/:doctor_id",
+  "/:doctorId",
   auth,
   acl.grantAccess("deleteAny", "doctor"),
+  param("doctorId", "This is not a valid doctor id").isMongoId().notEmpty(),
   DoctorsController.deleteDoctorById
 );
 
 //@route POST doctors/set-schedul/:doctorId
-//@desc POST set schedule and unavaliable dates to doctor id
+//@desc POST set schedule and unavaliable dates to doctor id, param doctorId must be a valid mongoId
 //@access private, admin only or actual doctor logged
 router.post(
   "/set-schedule/:doctorId",
   auth,
   acl.grantAccess("updateOwn", "doctor"),
+  param("doctorId", "This is not a valid doctor id").isMongoId().notEmpty(),
   DoctorsController.setDoctorSchedule
 );
-
 
 module.exports = router;

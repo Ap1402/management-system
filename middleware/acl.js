@@ -1,16 +1,20 @@
 const { roles } = require("../roles");
+const ErrorHandler = require("../helpers/ErrorHandler");
 
-exports.grantAccess = function(action, resource) {
+exports.grantAccess = function (action, resource) {
   return async (req, res, next) => {
     try {
-      if(!req.user){
-        throw Error('Seems you are not logged in or this user does not exists')
+      if (!req.user) {
+        throw Error("Seems you are not logged in or this user does not exists");
       }
       const permission = roles.can(req.user.role)[action](resource);
       if (!permission.granted) {
-        return res.status(401).json({
-          error: "You don't have enough permission to perform this action"
-        });
+        next(
+          new ErrorHandler(
+            "403",
+            "You do not have enough permissions to do that"
+          )
+        );
       }
       next();
     } catch (error) {

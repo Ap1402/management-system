@@ -4,22 +4,23 @@ const Schema = mongoose.Schema;
 const PatientSchema = new mongoose.Schema(
   {
     address: {
-      type: String
+      type: String,
     },
     birthDate: {
       type: Date,
-      required: [true, "Your birthdate is required"]
+      required: [true, "Your birthdate is required"],
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: "user"
+      ref: "user",
+      unique: true,
     },
     allergies: {
-      type: String
+      type: String,
     },
     specificInfo: {
-      type: String
-    }
+      type: String,
+    },
   },
   { timestamps: true }
 );

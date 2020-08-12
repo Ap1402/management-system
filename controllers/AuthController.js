@@ -32,17 +32,14 @@ exports.logoutAllTokens = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.user._id });
     if (!user) {
-      return res
-        .status(400)
-        .json({ errors: [{ msg: "You are already logged out" }] });
+      next(new ErrorHandler(400, "You are already logged out"));
     }
     user.tokens = [];
 
     await user.save();
     return res.send();
   } catch (err) {
-    console.error(err.message);
-    return res.status(500).send("server error");
+    next(err);
   }
 };
 
@@ -51,9 +48,7 @@ exports.logoutActualToken = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.user.id });
     if (!user) {
-      return res
-        .status(400)
-        .json({ errors: [{ msg: "You are already logged out" }] });
+      next(new ErrorHandler(400, "You are already logged out"));
     }
     user.tokens = user.tokens.filter((token) => {
       return token.token !== req.token;
@@ -62,7 +57,6 @@ exports.logoutActualToken = async (req, res) => {
     await user.save();
     return res.send();
   } catch (err) {
-    console.error(err.message);
-    return res.status(500).send("server error");
+    next(err);
   }
 };

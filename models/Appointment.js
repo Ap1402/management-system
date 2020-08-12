@@ -23,10 +23,9 @@ const AppointmentSchema = new mongoose.Schema(
         type: String,
         required: [true, "A specific hour is required"],
       },
-      selectedMinutes: {
-        type: String,
-        required: [true, "minutes are required"],
-      },
+    },
+    specificRequest: {
+      type: String,
     },
     reason: {
       type: String,

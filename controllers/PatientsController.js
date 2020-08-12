@@ -1,11 +1,14 @@
 const Patient = require("../models/Patient");
 const { validationResult } = require("express-validator");
+const ErrorHandler = require("../helpers/ErrorHandler");
 
 exports.createPatient = async (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    next(new ErrorHandler("400", errors.array()));
   }
+
   try {
     const { address, dni, birthDate, allergies, specificInfo } = req.body;
 
@@ -38,22 +41,23 @@ exports.createPatient = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).send("server error");
+    next(err);
   }
 };
 
 exports.deletePatientById = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    next(new ErrorHandler("400", errors.array()));
   }
   try {
-    const patient = await Patient.findByIdAndDelete(req.params.patient_id);
+    const patient = await Patient.findByIdAndDelete(req.params.patientId);
+    if (!patient) {
+      next(new ErrorHandler(404, "There is no patient with this id"));
+    }
     res.status(200).json(patient);
   } catch (err) {
-    console.error(err);
-    res.status(400).json("Server problem");
+    next(err);
   }
 };
 
@@ -62,7 +66,28 @@ exports.getAllPatients = async (req, res) => {
     const patients = await Patient.find();
     res.status(200).json(patients);
   } catch (err) {
-    console.error(err);
-    res.status(400).json("Server problem");
+    next(err);
+  }
+};
+
+exports.getPatientById = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    next(new ErrorHandler("400", errors.array()));
+  }
+
+  try {
+    const { patientId } = req.params;
+
+    const patient = await Patient.findById(patientId)
+      .populate("user", "firstName lastName")
+      .select("-createdAt -updatedAt");
+    if (!patient) {
+      next(new ErrorHandler(404, "There is no patient with this id"));
+    }
+    res.status(200).json(patient);
+  } catch (err) {
+    next(err);
   }
 };
