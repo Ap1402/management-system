@@ -1,6 +1,8 @@
 # Doctor appointment management system
 
-
+## TODO: 
+- Write Endpoints in the README.
+- Integrate with email notification package.
 ## How to install this project:
 
 1) Download or clone this repository
